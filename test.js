@@ -3,14 +3,14 @@ let valueInput = '';
 let input = null;
 let indexEdit = null;
 
-window.onload = function init () {
+window.onload = init = () => {
     input = document.getElementById('add-task'); //взяли элемент по id
     input.addEventListener('change', updateValue); // прослушиваем событие change и навешиваем функцию
     input.placeholder = 'Input task';
     render();
 }
 
-onClickButon = () => {
+const onClickButon = () => {
     allTasks.push ( {
         text: valueInput,
         isChek: false
@@ -120,7 +120,7 @@ render = () => {
     });
 }
 
-onChangeCheckBox = (index) => {
+const onChangeCheckBox = (index) => {
     allTasks[index].isChek = !allTasks[index].isChek;
     allTasks.push(allTasks[index]);
     allTasks.splice(index, 1)
@@ -128,13 +128,13 @@ onChangeCheckBox = (index) => {
     render();
 }
 
-deleteTasks = (index) => {
+const deleteTasks = (index) => {
     allTasks.splice(index, 1);
     localStorage.setItem('tasks', JSON.stringify(allTasks));
     render();
 }
 
-dellAllTasks = () => {
+const dellAllTasks = () => {
     allTasks = [];
     localStorage.setItem('tasks', JSON.stringify(allTasks));
     render();
