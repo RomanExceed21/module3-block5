@@ -3,7 +3,7 @@ let valueInput = "";
 let input = null;
 let indexEdit = null;
 
-window.onload = async function init() {
+window.onload = init = async () => {
   input = document.getElementById("add-task");
   input.addEventListener("change", updateValue);
   input.placeholder = "Input task";
@@ -12,30 +12,24 @@ window.onload = async function init() {
   });
   const result = await response.json();
   allTasks = result.data;
-	console.log(allTasks);
   render();
-};
+}
 
 const onClickButon = async () => {
-  allTasks.push({
-    text: valueInput,
-    isCheck: false
+  const response = await fetch("http://localhost:8000/createTask", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json;charset=utf-8",
+      "Access-Control-Allow-Origin": "*",
+    },
+    body: JSON.stringify({
+      text: valueInput,
+      isCheck: false,
+    })
   });
-	const response = await fetch("http://localhost:8000/createTask", {
-    method: 'POST',
-		headers: {
-			'Content-Type': 'application/json;charset=utf-8',
-			'Access-Control-Allow-Origin': '*'
-		},
-		body: JSON.stringify({
-			text: valueInput,
-    	isCheck: false
-		})
-  });
-	let result = await response.json();
-	allTasks = result.data;
-	console.log(allTasks);
-	localStorage.setItem("tasks", JSON.stringify(allTasks));
+  const result = await response.json();
+  allTasks = result.data;
+  localStorage.setItem("tasks", JSON.stringify(allTasks));
   valueInput = "";
   input.value = "";
   render();
@@ -43,7 +37,7 @@ const onClickButon = async () => {
 
 updateValue = (event) => {
   valueInput = event.target.value;
-};
+}
 
 render = () => {
   const content = document.getElementById("content-page");
@@ -59,9 +53,9 @@ render = () => {
     const checkbox = document.createElement("input");
     checkbox.className = "checkbox";
     checkbox.type = "checkbox";
-    checkbox.checked = item.isChek;
+    checkbox.checked = item.isCheck;
 
-    checkbox.onchange = function () {
+    checkbox.onchange = () => {
       onChangeCheckBox(index);
     };
 
@@ -84,23 +78,20 @@ render = () => {
       saveButton.onclick = async () => {
         input1 = document.getElementById("add-correction");
         input1.addEventListener("change", updateValue);
-        allTasks[index].text = input1.value;
-				console.log(input1.value)
-				console.log(allTasks);
-				const response = await fetch("http://localhost:8000/updateTask", {
-    			method: 'PATCH',
-					headers: {
-						'Content-Type': 'application/json;charset=utf-8',
-						'Access-Control-Allow-Origin': '*'
-					},
-					body: JSON.stringify({
-						id: allTasks[index].id,
-						text: input1.value,
-						isCheck: false
-					})			
-  			});
-				let result = await response.json();
-				allTasks = result.data;
+        console.log(allTasks);
+        const response = await fetch("http://localhost:8000/updateTask", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify({
+            id: allTasks[index].id,
+            text: input1.value,
+          }),
+        });
+        const result = await response.json();
+        allTasks = result.data;
         localStorage.setItem("tasks", JSON.stringify(allTasks));
         indexEdit = null;
         render();
@@ -112,14 +103,14 @@ render = () => {
       cancelButton.src = "cancel.png";
       container.appendChild(cancelButton);
 
-      cancelButton.onclick = function () {
+      cancelButton.onclick = () => {
         indexEdit = null;
         render();
       };
     } else {
       const text = document.createElement("p");
       text.innerText = item.text;
-      text.className = item.isChek ? "text-task done-text" : "text-task";
+      text.className = item.isCheck ? "text-task done-text" : "text-task";
       container.appendChild(text);
     }
 
@@ -129,7 +120,7 @@ render = () => {
     buttonDelete.src = "del.png";
     if (indexEdit !== index) container.appendChild(buttonDelete);
 
-    buttonDelete.onclick = function () {
+    buttonDelete.onclick = () => {
       deleteTasks(index);
     };
 
@@ -138,11 +129,10 @@ render = () => {
     buttonEdit.type = "image";
     buttonEdit.src = "edit.png";
     if (indexEdit !== index) container.appendChild(buttonEdit);
-    if (indexEdit !== index && item.isChek === true) buttonEdit.disabled = true;
+    if (indexEdit !== index && item.isCheck) buttonEdit.disabled = true;
 
-    buttonEdit.onclick = function () {
+    buttonEdit.onclick = () => {
       indexEdit = index;
-
       render();
     };
 
@@ -150,21 +140,32 @@ render = () => {
   });
 };
 
-const onChangeCheckBox = (index) => {
-  allTasks[index].isChek = !allTasks[index].isChek;
-  allTasks.push(allTasks[index]);
-  allTasks.splice(index, 1);
+const onChangeCheckBox = async (index) => {
+  allTasks[index].isCheck = !allTasks[index].isCheck;
+  const response = await fetch("http://localhost:8000/updateTask", {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({
+      id: allTasks[index].id,
+      isCheck: allTasks[index].isCheck
+    })			
+  });
+  const result = await response.json();
+  allTasks = result.data;
+  allTasks.sort((a, b) => a.isCheck - b.isCheck);
   localStorage.setItem("tasks", JSON.stringify(allTasks));
   render();
 };
 
 const deleteTasks = async (index) => {
-	console.log(allTasks[index].id, index)
-	const response = await fetch(`http://localhost:8000/deleteTask?id=${allTasks[index].id}`, {
-    method: 'DELETE'
-  });
-	const result = await response.json();
-	allTasks = result.data;
+  const response = await fetch(`http://localhost:8000/deleteTask?id=${allTasks[index].id}`, {
+      method: "DELETE",
+    });
+  const result = await response.json();
+  allTasks = result.data;
   localStorage.setItem("tasks", JSON.stringify(allTasks));
   render();
 };
