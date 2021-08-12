@@ -35,12 +35,13 @@ const onClickButon = async () => {
   render();
 };
 
-updateValue = (event) => {
+const updateValue = (event) => {
   valueInput = event.target.value;
 }
 
-render = () => {
+const render = () => {
   const content = document.getElementById("content-page");
+  allTasks.sort((a, b) => a.isCheck - b.isCheck);
 
   while (content.firstChild) {
     content.removeChild(content.firstChild);
@@ -78,7 +79,6 @@ render = () => {
       saveButton.onclick = async () => {
         input1 = document.getElementById("add-correction");
         input1.addEventListener("change", updateValue);
-        console.log(allTasks);
         const response = await fetch("http://localhost:8000/updateTask", {
           method: "PATCH",
           headers: {
@@ -110,7 +110,7 @@ render = () => {
     } else {
       const text = document.createElement("p");
       text.innerText = item.text;
-      text.className = item.isCheck ? "text-task done-text" : "text-task";
+      text.className = `text-task ${item.isCheck ? "done-text" : ""}`;
       container.appendChild(text);
     }
 
@@ -142,6 +142,7 @@ render = () => {
 
 const onChangeCheckBox = async (index) => {
   allTasks[index].isCheck = !allTasks[index].isCheck;
+  const {id, isCheck} = allTasks[index];
   const response = await fetch("http://localhost:8000/updateTask", {
     method: 'PATCH',
     headers: {
@@ -149,13 +150,11 @@ const onChangeCheckBox = async (index) => {
       'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
-      id: allTasks[index].id,
-      isCheck: allTasks[index].isCheck
+      id, isCheck
     })			
   });
   const result = await response.json();
   allTasks = result.data;
-  allTasks.sort((a, b) => a.isCheck - b.isCheck);
   localStorage.setItem("tasks", JSON.stringify(allTasks));
   render();
 };
