@@ -22,8 +22,7 @@ body {
 .header-button {
   min-width: 115px;
   margin-left: 5%;
-  padding-left: 0 4%;
-  padding-right: 4%;
+  padding: 0 4%;
   box-shadow: 0 10px 10px grey;
   border: none;
   text-align: center;
@@ -31,13 +30,12 @@ body {
 
 .header-button:active {
   margin-left: 5%;
-  padding-left: 4%;
-  padding-right: 4%;
+  padding: 0 4%;
   outline: 1px solid rgb(134, 130, 130);
 }
 
 .main-input {
-  width: 200%;
+  width: 70%;
   font-size: 70%;
   border: 1px solid rgb(182, 223, 182);
   box-shadow: 0 10px 10px grey;
@@ -68,8 +66,7 @@ body {
   text-overflow: ellipsis;
   font-size: 18px;
   color: black;
-  margin: 0;
-  margin-top: 2%;
+  margin: 2% 0 0 0;
 }
 
 .task-container img {
@@ -82,8 +79,7 @@ body {
 }
 
 .button {
-  margin: 0%;
-  margin-top: 2%;
+  margin: 2% 0 0 0;
   margin-left: 10px;
 }
 
@@ -97,15 +93,13 @@ body {
   text-overflow: ellipsis;
   background-color: rgb(182, 223, 182);
   font-size: 18px;
-  margin: 0%;
-  margin-top: 2%;
+  margin: 2% 0 0 0;
 }
 
 input[type="checkbox"] {
   width: 20px;
   height: 20px;
-  margin-top: 2%;
-  margin-right: 1%;
+  margin: 2% 1% 0 0;
 }
 
 @media screen and (max-width: 420px) {
@@ -126,7 +120,7 @@ input[type="checkbox"] {
   .header-button {
     min-width: 60px;
     margin-left: 5%;
-    padding: 0 4% 0 4%;
+    padding: 0 4%;
     box-shadow: 0 10px 10px grey;
     border: none;
     text-align: center;
