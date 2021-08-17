@@ -1,4 +1,4 @@
-let allTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let allTasks = [];
 let valueInput = "";
 let input = null;
 let indexEdit = null;
@@ -58,7 +58,7 @@ const render = () => {
 
     checkbox.onchange = () => {
       onChangeCheckBox(index);
-    };
+    }
 
     container.appendChild(checkbox);
 
@@ -73,7 +73,7 @@ const render = () => {
       const saveButton = document.createElement("input");
       saveButton.className = "button";
       saveButton.type = "image";
-      saveButton.src = "save.png";
+      saveButton.src = "img/save.png";
       container.appendChild(saveButton);
 
       saveButton.onclick = async () => {
@@ -86,7 +86,7 @@ const render = () => {
             "Access-Control-Allow-Origin": "*",
           },
           body: JSON.stringify({
-            id: allTasks[index].id,
+            _id: allTasks[index]._id,
             text: input1.value,
           }),
         });
@@ -95,12 +95,12 @@ const render = () => {
         localStorage.setItem("tasks", JSON.stringify(allTasks));
         indexEdit = null;
         render();
-      };
+      }
 
       const cancelButton = document.createElement("input");
       cancelButton.className = "button";
       cancelButton.type = "image";
-      cancelButton.src = "cancel.png";
+      cancelButton.src = "img/cancel.png";
       container.appendChild(cancelButton);
 
       cancelButton.onclick = () => {
@@ -117,7 +117,7 @@ const render = () => {
     const buttonDelete = document.createElement("input");
     buttonDelete.className = "button";
     buttonDelete.type = "image";
-    buttonDelete.src = "del.png";
+    buttonDelete.src = "img/del.png";
     if (indexEdit !== index) container.appendChild(buttonDelete);
 
     buttonDelete.onclick = () => {
@@ -127,7 +127,7 @@ const render = () => {
     const buttonEdit = document.createElement("input");
     buttonEdit.className = "button";
     buttonEdit.type = "image";
-    buttonEdit.src = "edit.png";
+    buttonEdit.src = "img/edit.png";
     if (indexEdit !== index) container.appendChild(buttonEdit);
     if (indexEdit !== index && item.isCheck) buttonEdit.disabled = true;
 
@@ -142,7 +142,7 @@ const render = () => {
 
 const onChangeCheckBox = async (index) => {
   allTasks[index].isCheck = !allTasks[index].isCheck;
-  const {id, isCheck} = allTasks[index];
+  const { _id, isCheck } = allTasks[index];
   const response = await fetch("http://localhost:8000/updateTask", {
     method: 'PATCH',
     headers: {
@@ -150,7 +150,7 @@ const onChangeCheckBox = async (index) => {
       'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
-      id, isCheck
+      _id, isCheck
     })			
   });
   const result = await response.json();
@@ -160,7 +160,7 @@ const onChangeCheckBox = async (index) => {
 };
 
 const deleteTasks = async (index) => {
-  const response = await fetch(`http://localhost:8000/deleteTask?id=${allTasks[index].id}`, {
+  const response = await fetch(`http://localhost:8000/deleteTask?_id=${allTasks[index]._id}`, {
       method: "DELETE",
     });
   const result = await response.json();
